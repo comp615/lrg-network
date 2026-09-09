@@ -42,8 +42,11 @@
     maxBounds: L.latLngBounds(L.latLng(-85, -180), L.latLng(85, 180)),
     maxBoundsViscosity: 1.0,
   }).setView(initialCenter, initialZoom);
+
+  const cartoKey = mapEl.dataset.cartoKey;
+
   L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+    `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key=${encodeURIComponent(cartoKey)}`,
     {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -55,8 +58,7 @@
 
   var params = new URLSearchParams(window.location.search);
   var hasLocationFilter = params.has("country") || params.has("region") || params.has("city");
-  // Skip geolocation flyTo if we already restored a saved position
-  if (navigator.geolocation && !hasLocationFilter && !savedMapPos) {
+  if (navigator.geolocation && !hasLocationFilter) {
     navigator.geolocation.getCurrentPosition(function (pos) {
       map.setView([pos.coords.latitude, pos.coords.longitude], ZOOM_COUNTRY, {
         animate: true,
